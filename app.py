@@ -11,14 +11,16 @@ db = mysql.connector.connect(
 )
 
 
-@app.route("/data", methods=["GET"])
+@app.route('/data', methods=['GET'])
 def get_data():
+    date = request.args.get('date')
+
     if not date:
-        return jsonify({"error": "No date provided"})
+        return jsonify({'error': 'No date provided'})
 
     cursor = db.cursor()
 
-    query = """SELECT * FROM electricity_market_data WHERE date = %s"""
+    query = "SELECT * FROM electricity_market_data WHERE date = %s"
     cursor.execute(query, (date,))
     result = cursor.fetchall()
 
@@ -28,15 +30,16 @@ def get_data():
     data = []
     for row in result:
         record = {
-            "date": row[0],
-            "hour": row[1],
-            "price": row[2],
-            "volume": row[3],
+            'date': row[0],
+            'hour': row[1],
+            'price': row[2],
+            'volume': row[3],
         }
         data.append(record)
 
     return jsonify(data)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run()
+
